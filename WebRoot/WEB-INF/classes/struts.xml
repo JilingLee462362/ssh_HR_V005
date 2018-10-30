@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<constant name="struts.action.extension" value="action,do" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.devMode" value="true" /><!--开发模式下使用，这样可以打印出更详细的错误信息 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.multipart.maxSize" value="1000000000000" /><!-- 设置文件上传最大字节数 -->
+	
+	
+	<!-- 约定Action包位置：可以使用的Action的祖包，默认为没有， 设置为 cn.javass.ssh 就可以读取这个包及其子包的所有头上注册了【 @Action 】 的类。-->
+	<constant name="struts.convention.action.packages" value="com.tzhu.ssh.controller" />
+	
+	<package name="ssh01"  extends="struts-default" namespace="/hf">
+<!-- 		<action name="humanfile_search" class="com.tzhu.ssh.controller.HumanFileAction"> -->
+<!-- 			<result name="searchpage" >admin/humanfile/humanfile_search.jsp</result> -->
+<!-- 		</action> -->
+		
+<!-- 		<action name="ajaxHumanList" class="com.tzhu.ssh.controller.HumanFileAction"> -->
+<!-- 			<result name="searchpage" >/admin/humanfile/humanfile_search.jsp</result> -->
+<!-- 		</action> -->
+	</package>
+</struts>    

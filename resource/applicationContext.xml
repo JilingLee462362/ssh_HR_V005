@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+
+	<!-- 01 数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost:3306/jj1803_ssh_hr">
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123123"></property>
+	</bean>
+
+
+	<!-- 加载数据库属性配置文件 -->
+	<!-- <context:property-placeholder location="classpath:db.properties" /> -->
+	<!-- 数据库连接池c3p0配置 -->
+
+	<!--<bean id="dataSource-c3po" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+		destroy-method="close"> <property name="jdbcUrl" value="${db.url}"></property> 
+		<property name="driverClass" value="${db.driverClassName}"></property> <property 
+		name="user" value="${db.username}"></property> <property name="password" 
+		value="${db.password}"></property> <property name="maxPoolSize" value="40"></property> 
+		<property name="minPoolSize" value="1"></property> <property name="initialPoolSize" 
+		value="1"></property> <property name="maxIdleTime" value="20"></property> 
+		</bean> -->
+
+
+	<!-- 02 sessionFactory 全局的session工厂 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" /><!--多方案 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+
+		<!--使用注解 -->
+
+<!-- 		<property name="packagesToScan">
+			<list>
+				<value>com.tzhu.ssh.domain</value>
+			</list>
+		</property> -->
+
+		<!--使用配置文件 -->
+
+		<property name="mappingResources">
+
+			<list>
+				<value>com/tzhu/ssh/entity/Bonus.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigFileThirdKind.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigMajor.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigMajorKind.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigPrimaryKey.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigPublicChar.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigQuestionFirstKind.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/ConfigQuestionSecondKind.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageAnswer.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageAnswerDetails.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageExam.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageExamDetails.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageInterview.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageMajorRelease.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageResume.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/EngageSubjects.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/HumanFile.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/MajorChange.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/Menutree.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/Role.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/SalaryGrant.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/SalaryStandard.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/SalaryStandardDetails.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/Training.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/Userinfo.hbm.xml</value>
+				<value>com/tzhu/ssh/entity/SalaryStandards.hbm.xml</value>
+			 
+
+
+			</list>
+
+		</property>
+
+
+
+	</bean>
+
+
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+<!-- 配置事务通知属性    -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 定义事务传播属性 -->
+		<tx:attributes>
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="new*" propagation="REQUIRED" />
+			<tx:method name="set*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="change*" propagation="REQUIRED" />
+
+			<!-- hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到 -->
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="count*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="list*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="is*" propagation="REQUIRED" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+
+	<!-- 配置事务切面 com.item.biz.impl-->
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="serviceOperation" expression="execution(* com.tzhu.ssh..*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation"  />
+	</aop:config>
+
+<!--使用bean标签和注解 ，其中一个方案就行了  -->
+<!-- 	<bean  id="baseDao" class="com.tzhu.ssh.appcomm.base.BaseDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean> -->
+	 
+<!-- <bean  id="baseBiz"  class="com.tzhu.ssh.appcomm.base.BaseBizImpl">
+	<property name="baseDao" ref="baseDao"/>
+	</bean> -->
+
+<!-- 	<bean id="baseaction" class="com.tzhu.ssh.appcomm.base.BaseAction">
+		<property name="baseBiz" ref="baseBiz"/>
+	</bean>
+ -->
+
+
+
+
+	<!-- 自动加载构建bean -->
+	<context:component-scan base-package="com.tzhu.ssh.appcomm"/>
+	<context:component-scan base-package="com.tzhu.ssh.domain"/>
+	<context:component-scan base-package="com.tzhu.ssh.dao"/>
+	<context:component-scan base-package="com.tzhu.ssh.biz"/>
+	<context:component-scan base-package="com.tzhu.ssh.controller"/>
+
+
+
+
+
+
+
+
+
+
+</beans>
